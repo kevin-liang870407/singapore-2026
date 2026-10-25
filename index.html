@@ -144,6 +144,11 @@ dialog#lb{width:100vw;height:100vh;height:100dvh;max-width:none;max-height:none;
 <div class="fl-row"><div><div class="t">14:25</div><div class="ap">新加坡樟宜 SIN</div></div><div class="fl-mid"><span>✈</span></div><div style="text-align:right"><div class="t">19:05</div><div class="ap">桃園 TPE</div></div></div>
 </div>
 <p class="srcs">以上為航空公司表定時間,如有變動以航空公司通知為準。</p>
+<div class="card c-gr">
+<h3>發布我的修改</h3>
+<p style="margin:6px 0">你在這支手機改的內容,只有你自己看得到。按下面的按鈕,會下載一份包含你所有修改的新 index.html;再到 GitHub 上傳覆蓋,同行的人重新整理就會看到。</p>
+<button type="button" class="btn go" id="export">匯出更新檔 index.html</button>
+</div>
 </section>
 
 <section class="page" id="p-days">
@@ -209,6 +214,7 @@ dialog#lb{width:100vw;height:100vh;height:100dvh;max-width:none;max-height:none;
 <dialog id="lb" aria-label="圖片檢視"><button type="button" id="lbx" aria-label="關閉">×</button><span id="lbh">點圖片可放大/縮小</span><div class="box"><img id="lbi" class="fit" alt="放大的圖片"></div></dialog>
 <div id="toast" role="status"></div>
 
+<script type="application/json" id="seed">null</script>
 <script>
 (function(){
 var KEY='trip-sg-cruise-2026-v1';
@@ -263,6 +269,12 @@ function build(){
 }
 var S;
 try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+var SEED=null,wipe=false;
+try{SEED=JSON.parse($('seed').textContent)}catch(e){}
+if(SEED&&SEED.data&&SEED.data.days&&(!S||!S.days||S.seedV!==SEED.v)){
+ var dn=(S&&S.done)||{};wipe=!!(S&&S.days);
+ S=JSON.parse(JSON.stringify(SEED.data));S.done=dn;S.seedV=SEED.v;S.lodge={cabin:'',note:''};
+}
 if(!S||!S.days)S=build();
 var day=0,editing=null,tmpImg='';
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('儲存空間不足,請刪掉一些圖片')}}
@@ -422,7 +434,24 @@ document.addEventListener('click',function(e){var im=e.target;if(im.tagName==='I
 lbi.onclick=function(){lbi.className=lbi.className==='fit'?'big':'fit'};
 $('lbx').onclick=function(){lb.close()};
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
-idbOpen(function(){idbAll(function(){renderTL(false);renderCruise();renderStay()})});
+function migrate(){var ch=false;function m(o){if(o.img&&o.img.indexOf('data:')===0&&idb){o.img=putImg(o.img);ch=true}}
+ S.days.forEach(function(d){d.items.forEach(m)});(S.cruise||[]).forEach(m);(S.stay||[]).forEach(m);if(ch)save()}
+idbOpen(function(){
+ var go=function(){migrate();renderTL(false);renderCruise();renderStay()};
+ if(wipe&&idb){IMG={};try{idb.transaction('i','readwrite').objectStore('i').clear()}catch(e){}go()}else idbAll(go);
+});
+$('export').onclick=function(){
+ var data=JSON.parse(JSON.stringify({days:S.days,todo:S.todo,pack:S.pack,carry:S.carry,cruise:S.cruise,stay:S.stay},function(k,v){return(k==='img'&&v)?src(v):v}));
+ var v=Date.now();
+ fetch(location.href.split('#')[0],{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(h){
+  var seed=JSON.stringify({v:v,data:data}).replace(/</g,'\\u003c');
+  var out=h.replace(/(<script type="application\/json" id="seed">)[\s\S]*?(<\/script>)/,function(m,a,b){return a+seed+b});
+  if(out===h&&h.indexOf('id="seed"')<0)throw 0;
+  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([out],{type:'text/html'}));a.download='index.html';
+  document.body.appendChild(a);a.click();a.remove();
+  S.seedV=v;save();toast('已下載 index.html,請上傳到 GitHub 覆蓋舊檔');
+ }).catch(function(){toast('匯出失敗:請用網站網址(不是本機檔案)開啟後再試')});
+};
 })();
 </script>
 </body>
