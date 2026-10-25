@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>新加坡 × 迪士尼郵輪 旅遊帖</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Huninn&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFFCF6;--ink:#3E3A39;--co:#F2A497;--ye:#F6D27A;--aq:#A8D3E6;--gr:#B9DAA5;--b:3px solid var(--ink);--r:22px}
+*{box-sizing:border-box}
+html{scroll-padding-top:70px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Huninn","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;font-size:16px;line-height:1.6;padding-top:calc(64px + env(safe-area-inset-top,0px))}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+h1,h2,h3{margin:0;line-height:1.3}
+a{color:var(--ink)}
+.nav{position:fixed;z-index:20;top:0;left:0;right:0;padding:calc(8px + env(safe-area-inset-top,0px)) 10px 8px;background:var(--bg);border-bottom:var(--b);display:flex;gap:6px;justify-content:center}
+.nav button{flex:1;max-width:110px;min-height:44px;border:var(--b);border-radius:16px;background:#fff;font-size:15px}
+.nav button[aria-current=page]{background:var(--ye)}
+main{max-width:720px;margin:0 auto;padding:18px 16px 56px}
+.page{display:none}.page.on{display:block}
+.card{background:#fff;border:var(--b);border-radius:var(--r);padding:16px;margin:14px 0}
+.c-co{background:var(--co)}.c-ye{background:var(--ye)}.c-aq{background:var(--aq)}.c-gr{background:var(--gr)}
+.title{font-size:30px;text-align:center}
+.sub{text-align:center;margin:4px 0 14px}
+.frame{border:var(--b);border-radius:28px;overflow:hidden;background:var(--aq)}
+.frame img{display:block;width:100%;height:auto}
+svg .float,svg .float2{transform-box:fill-box;transform-origin:center}
+.float{animation:float 4s ease-in-out infinite}
+.float2{animation:float 5s ease-in-out -2s infinite}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-8px) rotate(1deg)}}
+@keyframes pop{0%{transform:scale(.92) translateY(14px);opacity:.3}55%{transform:scale(1.03) translateY(-4px);opacity:1}100%{transform:none}}
+@keyframes drift{from{transform:translateX(-30px)}to{transform:translateX(30px)}}
+.bounce{animation:pop .5s cubic-bezier(.3,1.6,.5,1) both}
+.cd{display:flex;gap:8px;justify-content:center;margin:12px 0}
+.cd div{flex:1;max-width:84px;border:var(--b);border-radius:18px;background:var(--ye);text-align:center;padding:6px 0}
+.cd b{display:block;font-size:26px;font-weight:400}.cd small{font-size:13px}
+.flight{display:flex;flex-direction:column;gap:6px}
+.fl-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.fl-row .t{font-size:28px}.fl-row .ap{font-size:14px}
+.fl-mid{flex:1;text-align:center;border-top:3px dashed var(--ink);position:relative;height:0;margin-top:2px}
+.fl-mid span{position:absolute;left:50%;top:-14px;transform:translateX(-50%);background:inherit;padding:0 6px;font-size:14px}
+.chip{display:inline-block;padding:0 10px;border:3px solid var(--ink);border-radius:14px;font-size:13px;line-height:1.5;background:#fff}
+.chip.g{background:var(--gr)}.chip.y{background:var(--ye)}.chip.c{background:var(--co)}.chip.a{background:var(--aq)}
+.days{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;scrollbar-width:none}
+.days button{flex:none;min-width:64px;min-height:56px;border:var(--b);border-radius:18px;background:#fff;line-height:1.2}
+.days button small{display:block;font-size:12px}
+.days button[aria-pressed=true]{background:var(--co)}
+.theme{text-align:center;margin:2px 0 8px}
+.tl{position:relative;padding-left:26px}
+.tl:before{content:"";position:absolute;left:8px;top:6px;bottom:6px;border-left:3px dashed var(--ink)}
+.it{position:relative;background:#fff;border:var(--b);border-radius:20px;padding:12px 14px 56px;margin:0 0 14px}
+.it:before{content:"";position:absolute;left:-26px;top:16px;width:16px;height:16px;border:var(--b);border-radius:50%;background:var(--ye)}
+.it h3{font-size:18px;margin:6px 40px 4px 0}
+.it .d{white-space:pre-line;font-size:15px}
+.it .note{margin-top:8px;padding:8px 10px;border:3px dashed var(--ink);border-radius:14px;background:var(--bg);white-space:pre-line;font-size:15px}
+.it img{display:block;max-width:100%;max-height:300px;margin-top:8px;border:var(--b);border-radius:14px}
+.x{position:absolute;top:8px;right:8px;width:44px;height:44px;border:var(--b);border-radius:50%;background:#fff;font-size:20px;line-height:1}
+.plus{position:absolute;right:10px;bottom:8px;width:44px;height:44px;border:var(--b);border-radius:50%;background:var(--co);font-size:28px;line-height:1}
+.plus:active,.x:active,.btn:active{transform:scale(.92)}
+.btn{min-height:44px;padding:0 18px;border:var(--b);border-radius:22px;background:var(--ye);transition:transform .15s}
+.btn.alt{background:#fff}.btn.go{background:var(--gr)}
+.add{display:block;width:100%;margin:6px 0}
+details{background:#fff;border:var(--b);border-radius:20px;margin:12px 0;overflow:hidden}
+summary{min-height:48px;padding:10px 16px;font-size:18px;cursor:pointer;background:var(--aq);list-style:none}
+summary::-webkit-details-marker{display:none}
+summary:after{content:"＋";float:right}details[open] summary:after{content:"－"}
+details>div{padding:4px 16px 14px}details li{margin:6px 0}
+.chk{display:flex;align-items:center;gap:10px;min-height:48px;margin:8px 0}
+.chk .box{flex:none;width:34px;height:34px;border:var(--b);border-radius:10px;background:#fff;font-size:20px;line-height:1}
+.chk .box[aria-pressed=true]{background:var(--gr)}
+.chk .lb{flex:1}.chk .lb.done{text-decoration:line-through;opacity:.6}
+.chk .del{flex:none;width:44px;height:44px;border:0;background:none;font-size:20px}
+.addrow{display:flex;gap:8px;margin-top:8px}.addrow input{flex:1;min-width:0}
+input[type=text],input[type=time],select,textarea{width:100%;min-height:44px;padding:8px 12px;border:var(--b);border-radius:14px;background:#fff}
+label{display:block;margin:10px 0 4px;font-size:14px}
+dialog{width:min(94vw,520px);max-height:90vh;border:var(--b);border-radius:26px;background:var(--bg);padding:16px;color:var(--ink)}
+dialog::backdrop{background:rgba(62,58,57,.45)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.prev{max-width:100%;max-height:180px;margin-top:8px;border:var(--b);border-radius:14px;display:block}
+.foot{text-align:center;font-size:13px;margin-top:24px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ye);border:var(--b);border-radius:18px;padding:8px 16px;z-index:40;display:none}
+.srcs{font-size:13px}.cimg{display:block;max-width:100%;max-height:320px;margin-top:8px;border:var(--b);border-radius:14px}.st-img{display:block;max-width:100%;max-height:320px;margin-top:10px;border:var(--b);border-radius:14px;background:#fff}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<nav class="nav" aria-label="主選單" id="nav"></nav>
+<main>
+
+<section class="page on" id="p-home">
+<h1 class="title">新加坡 × 迪士尼郵輪</h1>
+<p class="sub">2026.11.04(三)– 11.09(一)</p>
+<svg viewBox="0 0 400 290" width="100%" role="img" aria-label="新加坡風景插圖:魚尾獅、金沙酒店、超級樹與郵輪" style="display:block;margin:6px 0 4px" stroke="#3E3A39" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<rect x="3" y="3" width="394" height="284" rx="28" fill="#A8D3E6"/>
+<circle cx="338" cy="58" r="24" fill="#F6D27A"/>
+<g class="float2"><path d="M34 62q8-16 24-6q14-10 24 6q14 0 10 14H28q-6-10 6-14z" fill="#FFFCF6"/></g>
+<g style="animation:drift 8s ease-in-out infinite alternate"><path d="M170 40l46 7l18-9l4 8l-18 5l12 9l-6 3l-24-9l-32-4z" fill="#FFFCF6"/></g>
+<path d="M3 220H397V259a28 28 0 0 1-28 28H31a28 28 0 0 1-28-28z" fill="#FFFCF6"/>
+<path d="M20 248q12-8 24 0t24 0t24 0M290 270q12-8 24 0t24 0t24 0M150 266q12-8 24 0t24 0" fill="none" stroke="#A8D3E6"/>
+<rect x="150" y="96" width="30" height="124" fill="#FFFCF6"/><rect x="188" y="96" width="30" height="124" fill="#FFFCF6"/><rect x="226" y="96" width="30" height="124" fill="#FFFCF6"/>
+<path d="M165 114v98M203 114v98M241 114v98" fill="none" stroke="#A8D3E6"/>
+<path d="M138 92H268q-6 14-22 10H156q-14 4-18-10z" fill="#F2A497"/>
+<path d="M300 220V152M345 220V134" fill="none"/>
+<path d="M276 152q24-28 48 0q-24 9-48 0z" fill="#B9DAA5"/><path d="M319 134q26-32 52 0q-26 10-52 0z" fill="#B9DAA5"/>
+<circle cx="288" cy="150" r="3" fill="#F2A497" stroke="none"/><circle cx="312" cy="150" r="3" fill="#F2A497" stroke="none"/><circle cx="332" cy="132" r="3" fill="#F2A497" stroke="none"/><circle cx="358" cy="132" r="3" fill="#F2A497" stroke="none"/>
+<g class="float"><path d="M236 264l8-14h62l8 14z" fill="#F2A497"/><rect x="250" y="236" width="44" height="14" fill="#FFFCF6"/><rect x="258" y="224" width="8" height="12" fill="#F6D27A"/><rect x="276" y="224" width="8" height="12" fill="#F6D27A"/></g>
+<g class="float2">
+<path d="M96 124Q140 94 118 214" fill="none" stroke-width="10"/><path d="M96 124Q140 94 118 214" fill="none" stroke="#FFFCF6" stroke-width="4"/>
+<path d="M54 208C48 174 54 148 68 136L96 136C108 150 112 178 102 208Z" fill="#FFFCF6"/>
+<path d="M62 192q8 8 16 0q8 8 16 0M64 172q8 8 16 0q8 8 14 0" fill="none" stroke="#A8D3E6" stroke-width="2.5"/>
+<rect x="44" y="204" width="68" height="20" rx="7" fill="#FFFCF6"/>
+<g fill="#F6D27A"><circle cx="109" cy="112" r="8"/><circle cx="101" cy="131" r="8"/><circle cx="82" cy="139" r="8"/><circle cx="63" cy="131" r="8"/><circle cx="55" cy="112" r="8"/><circle cx="63" cy="93" r="8"/><circle cx="82" cy="85" r="8"/><circle cx="101" cy="93" r="8"/><circle cx="82" cy="112" r="27"/></g>
+<circle cx="82" cy="114" r="19" fill="#FFFCF6"/>
+<circle cx="75" cy="111" r="2.6" fill="#3E3A39" stroke="none"/><circle cx="90" cy="111" r="2.6" fill="#3E3A39" stroke="none"/>
+<circle cx="70" cy="120" r="4" fill="#F2A497" stroke="none"/><circle cx="95" cy="120" r="4" fill="#F2A497" stroke="none"/>
+<path d="M78 121q4 5 9 0" fill="none" stroke-width="2.5"/>
+</g>
+</svg>
+<div class="cd" id="cd" aria-live="off"></div>
+<p class="sub" id="cdnote"></p>
+
+
+<h2 style="margin-top:22px">航班</h2>
+<div class="card c-aq flight">
+<div><span class="chip">去程</span> 11/04(三)・中華航空 CI753</div>
+<div class="fl-row"><div><div class="t">08:20</div><div class="ap">桃園 TPE</div></div><div class="fl-mid"><span>✈</span></div><div style="text-align:right"><div class="t">13:05</div><div class="ap">新加坡樟宜 SIN</div></div></div>
+</div>
+<div class="card c-co flight">
+<div><span class="chip">回程</span> 11/09(一)・中華航空 CI754</div>
+<div class="fl-row"><div><div class="t">14:25</div><div class="ap">新加坡樟宜 SIN</div></div><div class="fl-mid"><span>✈</span></div><div style="text-align:right"><div class="t">19:05</div><div class="ap">桃園 TPE</div></div></div>
+</div>
+<p class="srcs">以上為航空公司表定時間,如有變動以航空公司通知為準。</p>
+</section>
+
+<section class="page" id="p-days">
+<h2>每日行程</h2>
+<div class="days" id="daytabs" role="group" aria-label="選擇日期"></div>
+<p class="theme" id="theme"></p>
+<div class="tl bounce" id="tl"></div>
+<button class="btn go add" id="additem">＋ 新增行程</button>
+<p class="srcs">點右下角「＋」可編輯內容、加備註與圖片;點右上角「×」刪除。資料只存在這支手機的瀏覽器裡。</p>
+<button class="btn alt" id="reset">還原預設行程</button>
+</section>
+
+<section class="page" id="p-cruise">
+<h2>迪士尼郵輪介紹</h2>
+<p class="sub">Disney Adventure・亞洲第一艘迪士尼郵輪</p>
+<div id="cruise"></div>
+<button class="btn go add" id="addcr">＋ 新增視窗</button>
+<p class="srcs">整理自迪士尼郵輪官網(disneycruise.disney.go.com)與旅遊媒體報導。餐廳、表演與樓層可能調整,請以出發前 App 與官網公告為準。<br><a href="https://disneycruise.disney.go.com/ships/adventure/" target="_blank" rel="noopener">官網:Disney Adventure</a>・<a href="https://disneycruise.disney.go.com/onboard-activities/list/dining/" target="_blank" rel="noopener">官網:餐飲列表</a></p>
+</section>
+
+<section class="page" id="p-list">
+<h2>待辦與行李清單</h2>
+<div id="lists"></div>
+</section>
+
+<section class="page" id="p-stay">
+<h2>住宿資訊</h2>
+<div id="stay"></div>
+<button class="btn go add" id="addst">＋ 新增視窗</button>
+<p class="srcs">每個視窗都能編輯文字、加連結與圖片;也能新增(例如訂房確認碼、KKday 憑證、保險資料)。</p>
+</section>
+
+<p class="foot">祝旅途平安 ✦ 資料存於本機瀏覽器</p>
+</main>
+
+<dialog id="dlg" aria-labelledby="dtitle">
+<form method="dialog" id="frm">
+<h2 id="dtitle" style="font-size:20px">編輯行程</h2>
+<label for="f-time">時間</label><input type="text" id="f-time" placeholder="例:14:00">
+<label for="f-title">標題</label><input type="text" id="f-title" required>
+<label for="f-detail">說明</label><textarea id="f-detail" rows="3"></textarea>
+<label for="f-tag">交通方式</label>
+<select id="f-tag"><option>無</option><option>步行</option><option>公車</option><option>計程車</option><option>地鐵</option><option>接送</option><option>飛機</option><option>郵輪</option></select>
+<label for="f-note">我的備註</label><textarea id="f-note" rows="3"></textarea>
+<label for="f-img">圖片</label><input type="file" id="f-img" accept="image/*">
+<img class="prev" id="f-prev" alt="" hidden>
+<div class="row">
+<button type="button" class="btn go" id="f-save">儲存</button>
+<button type="button" class="btn alt" id="f-cancel">取消</button>
+<button type="button" class="btn alt" id="f-rmimg">移除圖片</button>
+</div>
+</form>
+</dialog>
+<dialog id="dlg2" aria-labelledby="d2title"><form method="dialog">
+<h2 id="d2title" style="font-size:20px">編輯視窗</h2>
+<label for="g-title">標題</label><input type="text" id="g-title">
+<label for="g-text">內容(一行一點)</label><textarea id="g-text" rows="7"></textarea>
+<div id="g-linkwrap"><label for="g-link">連結(選填,例如地圖)</label><input type="text" id="g-link" placeholder="https://"></div>
+<label for="g-img">圖片(也可以直接貼上)</label><input type="file" id="g-img" accept="image/*">
+<img class="prev" id="g-prev" alt="" hidden>
+<div class="row"><button type="button" class="btn go" id="g-save">儲存</button><button type="button" class="btn alt" id="g-cancel">取消</button><button type="button" class="btn alt" id="g-rmimg">移除圖片</button></div>
+</form></dialog>
+<div id="toast" role="status"></div>
+
+<script>
+(function(){
+var KEY='trip-sg-cruise-2026-v1';
+var TAGC={'步行':'g','公車':'y','計程車':'c','地鐵':'a','接送':'a','飛機':'a','郵輪':'y','無':''};
+var DEF={
+ days:[
+  {d:'11/04',w:'三',theme:'新加坡',items:[
+   ['13:05','抵達樟宜機場','有免費接機到飯店(車程約30分)。記得買 eSIM。','飛機'],
+   ['14:00','Hotel Mi Rochor 入住','89 Short Street, Singapore 188216。近 Rochor MRT A 出口。','接送'],
+   ['14:20','松發肉骨茶','Song Fa Bak Kut Teh,約 14:20–15:00。搭 147 公車約10分。','公車'],
+   ['15:10','魚尾獅公園','Merlion Park,約 15:10–15:40。走路約15分,或計程車約10分。','步行'],
+   ['16:00','濱海灣花園','搭 97/106/133 公車約20分。建議 Klook 買票。花穹 16:00–17:00、雲霧林 17:00–18:20。','公車'],
+   ['18:20','晚餐:Shake Shack','Gardens by the Bay(地圖 J 點)。擎天樹觀景台要另購 S$14(約台幣 360),最後入場 20:30。','步行'],
+   ['19:45','超級樹燈光秀','Supertree Grove。19:45 與 20:45 兩場,每場約15分。有連通橋可走到金沙購物中心。','步行'],
+   ['21:00','Spectra 水舞秀','週日至週四每晚兩場(20:00、21:00)。','步行']]},
+  {d:'11/05',w:'四',theme:'登上迪士尼郵輪',items:[
+   ['07:30','早餐','方案1 喜園:咖椰吐司套餐、白斬雞肉飯(先排隊找位、只收現金、不收 S$5)。計程車7分/地鐵13分。\n方案2 3 Meals a Day:鹹蛋雞丁飯、牛油肉飯(走路3分)。','計程車'],
+   ['12:00 前','飯店退房','12:00 前退房即可。','無'],
+   ['11:00–15:30','登船','依報到時段分批登船,最晚為啟航前2小時。帶護照,先完成 App 線上報到。健康申報表 11/5 才會寄出,一位旅客代表填即可。','郵輪'],
+   ['16:00','安全演習','每人都要參加(約10分),房卡與 App 有集合地點。開航秀約10分,一天三場,依登船時間選。','郵輪'],
+   ['17:30 / 20:30','晚餐','App 會安排餐廳。10 樓有免費飲料吧,可帶自己的杯子。','郵輪'],
+   ['21:30 後','5 樓 World of Disney','可先買郵輪限定商品。','郵輪']]},
+  {d:'11/06',w:'五',theme:'郵輪日',items:[
+   ['待填','Remember 音樂劇(必看)','開演前半小時去排隊才有好位置,坐「ㄇ」字型走道較容易互動。','郵輪'],
+   ['待填','Disney Seas the Adventure','兩場主秀 App 會自動安排。','郵輪'],
+   ['待填','Ironcycle 雲霄飛車','遊樂設施要搶。','郵輪']]},
+  {d:'11/07',w:'六',theme:'郵輪日・返回新加坡',items:[
+   ['待填','自由安排','填入你的郵輪行程。','郵輪'],
+   ['待填','再填一次入境卡','郵輪回來再入境新加坡一次,需再填 SG Arrival Card。','無']]},
+  {d:'11/08',w:'日',theme:'下船',items:[
+   ['待填','下船・新加坡','筆記寫「11/8 搭飛機回台灣」,但航班是 11/9,請確認實際日期。','無']]},
+  {d:'11/09',w:'一',theme:'返台',items:[
+   ['14:25','CI754 新加坡 → 桃園','19:05 抵達。表定時間,以航空公司通知為準。','飛機'],
+   ['—','不要急著進出境','先處理行李/報到,再逛 Jewel。','無']]}
+ ],
+ todo:['10/30 前完成保險(旅平險、海外醫療險、不便險)','App 線上報到:旅客資料、護照、人臉照、選碼頭報到時間','App 綁定信用卡(船上用房卡累計,最後一晚信用卡結帳)','護照效期 6 個月以上(自返國日起算)','登機前 72 小時填 SG Arrival Card(去程一次,郵輪回來再一次)','11/5 填健康申報表(一位代表填即可)','抵達新加坡第一天買 eSIM','Klook 買濱海灣花園門票','換新加坡幣(匯率約 25.4)','列印並手機備份:護照照片、SG Arrival Card、Disney Cruise 確認號碼、KKday 訂單、機票、登船文件'],
+ pack:['牙膏、牙刷','Apple 原廠充電頭','拖鞋(要自備)','薄外套','自己的可樂杯(可裝飲料)'],
+ carry:['萬國轉接頭,帶 3 顆(新加坡 230V / 50Hz)','行動電源','電池(鋰電池只能手提,100Wh 以下)','處方藥(要有藥袋與診斷證明)','面紙多帶幾包(新加坡面紙要錢,也可佔位)','新加坡幣','護照與列印文件'],
+ lodge:{cabin:'',note:''}
+};
+var uid=function(){return Math.random().toString(36).slice(2,9)};
+function build(){
+ var s={days:DEF.days.map(function(d){return{d:d.d,w:d.w,theme:d.theme,items:d.items.map(function(a){return{id:uid(),time:a[0],title:a[1],detail:a[2],tag:a[3],note:'',img:''}})}}),lodge:{cabin:'',note:''},done:{}};
+ ['todo','pack','carry'].forEach(function(k){s[k]=DEF[k].map(function(t){return{id:uid(),t:t}})});
+ return s;
+}
+var S;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S||!S.days)S=build();
+var day=0,editing=null,tmpImg='';
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('儲存空間不足,請刪掉一些圖片')}}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function $(i){return document.getElementById(i)}
+function toast(m){var t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(function(){t.style.display='none'},2400)}
+
+var PAGES=[['home','首頁'],['days','行程'],['cruise','郵輪'],['list','清單'],['stay','住宿']];
+function show(p){
+ PAGES.forEach(function(x){$('p-'+x[0]).classList.toggle('on',x[0]===p)});
+ [].forEach.call($('nav').children,function(b){if(b.dataset.p===p)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+ window.scrollTo(0,0);
+ if(p==='days')renderTL(true);
+}
+$('nav').innerHTML=PAGES.map(function(x){return'<button type="button" data-p="'+x[0]+'">'+x[1]+'</button>'}).join('');
+$('nav').addEventListener('click',function(e){var b=e.target.closest('button');if(b)show(b.dataset.p)});
+show('home');
+
+function tick(){
+ var diff=new Date('2026-11-04T08:20:00+08:00')-Date.now();
+ if(diff<=0){$('cd').innerHTML='';$('cdnote').textContent='旅程已經開始,玩得開心!';return}
+ var d=Math.floor(diff/864e5),h=Math.floor(diff%864e5/36e5),m=Math.floor(diff%36e5/6e4);
+ $('cd').innerHTML=[[d,'天'],[h,'時'],[m,'分']].map(function(x){return'<div><b>'+x[0]+'</b><small>'+x[1]+'</small></div>'}).join('');
+ $('cdnote').textContent='距離 11/04 起飛還有';
+}
+tick();setInterval(tick,30000);
+
+function renderTabs(){
+ $('daytabs').innerHTML=S.days.map(function(d,i){return'<button type="button" data-i="'+i+'" aria-pressed="'+(i===day)+'">'+esc(d.d)+'<small>週'+esc(d.w)+'</small></button>'}).join('');
+}
+function renderTL(anim){
+ renderTabs();
+ var d=S.days[day];
+ $('theme').textContent='Day '+(day+1)+'・'+d.theme;
+ var tl=$('tl');
+ tl.innerHTML=d.items.map(function(it){
+  var c=TAGC[it.tag]||'';
+  return'<article class="it" data-id="'+it.id+'">'+
+  '<span class="chip">'+esc(it.time)+'</span> '+(it.tag&&it.tag!=='無'?'<span class="chip '+c+'">'+esc(it.tag)+'</span>':'')+
+  '<h3>'+esc(it.title)+'</h3>'+(it.detail?'<div class="d">'+esc(it.detail)+'</div>':'')+
+  (it.note?'<div class="note">'+esc(it.note)+'</div>':'')+(it.img?'<img src="'+it.img+'" alt="行程備註圖片">':'')+
+  '<button type="button" class="x" data-a="del" aria-label="刪除此行程">×</button>'+
+  '<button type="button" class="plus" data-a="edit" aria-label="編輯、加備註與圖片">＋</button></article>';
+ }).join('')||'<p>這天還沒有行程,按下方「新增行程」。</p>';
+ if(anim){tl.classList.remove('bounce');void tl.offsetWidth;tl.classList.add('bounce')}
+}
+$('daytabs').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;day=+b.dataset.i;renderTL(true)});
+$('tl').addEventListener('click',function(e){
+ var b=e.target.closest('button[data-a]');if(!b)return;
+ var id=b.closest('.it').dataset.id;
+ if(b.dataset.a==='del'){if(confirm('確定刪除這個行程?')){S.days[day].items=S.days[day].items.filter(function(i){return i.id!==id});save();renderTL(false)}}
+ else openDlg(id);
+});
+$('additem').onclick=function(){openDlg(null)};
+$('reset').onclick=function(){if(confirm('會清掉你對行程的所有修改(待辦與住宿不受影響),確定還原?')){S.days=build().days;day=0;save();renderTL(true)}};
+
+var dlg=$('dlg');
+function openDlg(id){
+ editing=id;var it=id?S.days[day].items.filter(function(i){return i.id===id})[0]:{time:'',title:'',detail:'',tag:'無',note:'',img:''};
+ $('dtitle').textContent=id?'編輯行程':'新增行程';
+ $('f-time').value=it.time;$('f-title').value=it.title;$('f-detail').value=it.detail;$('f-tag').value=it.tag||'無';$('f-note').value=it.note;$('f-img').value='';
+ tmpImg=it.img;setPrev();dlg.showModal();
+}
+function setPrev(){var p=$('f-prev');if(tmpImg){p.src=tmpImg;p.hidden=false}else p.hidden=true}
+$('f-img').onchange=function(e){
+ var f=e.target.files[0];if(!f)return;
+ var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){
+  var m=800,s=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');
+  c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+  tmpImg=c.toDataURL('image/jpeg',.72);setPrev()};im.src=r.result};r.readAsDataURL(f);
+};
+$('f-rmimg').onclick=function(){tmpImg='';$('f-img').value='';setPrev()};
+$('f-cancel').onclick=function(){dlg.close()};
+$('f-save').onclick=function(){
+ var t=$('f-title').value.trim();if(!t){$('f-title').focus();return}
+ var v={time:$('f-time').value.trim()||'—',title:t,detail:$('f-detail').value.trim(),tag:$('f-tag').value,note:$('f-note').value.trim(),img:tmpImg};
+ var arr=S.days[day].items;
+ if(editing){arr.forEach(function(i){if(i.id===editing)Object.assign(i,v)})}else{v.id=uid();arr.push(v)}
+ save();dlg.close();renderTL(false);
+};
+
+var GROUPS=[['todo','待辦清單','c-co'],['pack','託運行李','c-aq'],['carry','只能隨身攜帶(鋰電池、藥品、證件等)','c-ye']];
+function renderLists(){
+ $('lists').innerHTML=GROUPS.map(function(g){
+  var a=S[g[0]],n=a.filter(function(x){return S.done[x.id]}).length;
+  return'<div class="card '+g[2]+'" data-g="'+g[0]+'"><h3>'+g[1]+' <small>'+n+'/'+a.length+'</small></h3>'+
+  a.map(function(x){var d=!!S.done[x.id];return'<div class="chk" data-id="'+x.id+'"><button type="button" class="box" data-a="tog" aria-pressed="'+d+'" aria-label="勾選">'+(d?'✓':'')+'</button><span class="lb'+(d?' done':'')+'">'+esc(x.t)+'</span><button type="button" class="del" data-a="rm" aria-label="刪除">×</button></div>'}).join('')+
+  '<div class="addrow"><input type="text" aria-label="新增項目" placeholder="新增項目"><button type="button" class="btn alt" data-a="add">新增</button></div></div>';
+ }).join('');
+}
+$('lists').addEventListener('click',function(e){
+ var b=e.target.closest('button[data-a]');if(!b)return;
+ var g=b.closest('[data-g]').dataset.g,row=b.closest('.chk'),a=b.dataset.a;
+ if(a==='tog'){var id=row.dataset.id;S.done[id]=!S.done[id];save();renderLists()}
+ else if(a==='rm'){S[g]=S[g].filter(function(x){return x.id!==row.dataset.id});save();renderLists()}
+ else if(a==='add'){var inp=b.previousElementSibling,v=inp.value.trim();if(v){S[g].push({id:uid(),t:v});save();renderLists()}}
+});
+$('lists').addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.tagName==='INPUT'){e.preventDefault();e.target.nextElementSibling.click()}});
+
+
+var CR=[
+['船舶概要','<ul><li>Disney Adventure 是迪士尼郵輪在亞洲的第一艘船,從新加坡出發,提供3晚與4晚航程。</li><li>船體約 20.8 萬總噸、共 19 層甲板(旅遊媒體整理)。</li><li>全船分成 7 個主題區,把迪士尼、皮克斯與漫威的故事搬上船。</li><li>船上 App 連上船內 Wi-Fi 後,可看表演、活動、餐廳時間與角色見面時段。</li></ul>'],
+['七大主題區','<ul><li><b>Disney Imagination Garden</b>:船的中心,花園風格並有表演舞台。</li><li><b>Disney Discovery Reef</b>:海洋主題的步道,有《小美人魚》《海底總動員》風格的餐飲與購物。</li><li><b>San Fransokyo Street</b>:《大英雄天團》靈感街區。</li><li><b>Marvel Landing</b>:漫威主題遊樂設施與無邊際泳池酒吧(可看海景)。</li><li><b>Toy Story Place</b>:《玩具總動員》主題區。</li><li><b>Town Square</b>:廣場區。</li><li><b>Wayfinder Bay</b>:《海洋奇緣》靈感的露天泳池與表演空間。</li></ul>'],
+['樓層與位置','<ul><li>5 樓:World of Disney(你的筆記)。官網提到船上有 World of Disney 與 World of Disney Too,並有國家地理服飾、Duffy and Friends 玩偶。</li><li>10 樓:免費飲料吧,可帶自己的杯子(你的筆記)。</li><li>我沒有在官網查到完整的甲板對照表,上船後請以房卡、App 與船上樓層圖為準。</li></ul>'],
+['餐飲','<ul><li>晚餐採「輪轉用餐」:不同主題餐廳輪流去,並由同一組服務團隊陪你整趟航程。你的晚餐場次是 17:30 或 20:30,App 會安排餐廳。</li><li><b>娛樂餐廳</b>:Navigator’s Club(船長桌風格)、Hollywood Spotlight Club。</li><li><b>動畫餐廳</b>:Animator’s Palate、Animator’s Table(用餐空間會從黑白草圖變成彩色動畫)。</li><li><b>傳統餐廳</b>:Enchanted Summer Restaurant、Pixar Market Restaurant。</li><li><b>輕食與咖啡</b>:Alley Cat Café、Bacha Coffee、Bewitching Boba and Brews、Cosmic Kebabs、Gramma Tala’s Kitchen、Market Bar(Pixar Market 旁的戶外吧)。</li><li><b>特色餐廳(多半需另外付費)</b>:Palo Trattoria(義式)、Mike &amp; Sulley’s Flavours of Asia(四種亞洲風味)。</li><li>官網說明:除特別標示外,多數餐飲已含在船票內。</li></ul>'],
+['表演與活動','<ul><li><b>Remember</b>:專為這艘船打造的迪士尼與皮克斯音樂劇,你的筆記標為必看。開演前半小時排隊,有機會坐到靠走道的好位置。</li><li><b>Disney Seas the Adventure</b>:主秀之一,App 會自動安排。</li><li>另有百老匯風格舞台秀、甲板派對、電影放映、海上煙火,以及迪士尼、皮克斯、漫威角色見面。</li><li>安全演習:登船當天 16:00,全員參加。</li></ul>'],
+['遊樂與設施','<ul><li>官網介紹有「海上最長的雲霄飛車」與漫威主題遊樂設施(你的筆記:Ironcycle 要搶)。</li><li>泳池與戲水區、兒童俱樂部、豪華水療、精品與紀念品店、各式酒吧與休息室。</li><li>另有禮賓專屬樓層與休息室(Concierge)。</li></ul>'],
+['登船小撇步(你的筆記)','<ul><li>先在 App 完成線上報到、綁信用卡、選碼頭報到時間。</li><li>手機關閉自動時區與數據漫遊,連船上 Wi-Fi 即可用 App 與家人通訊;要上網另買 internet only。</li><li>21:30 後商店人比較少,可逛限定商品。</li><li>郵輪服務費每晚 US$16。</li></ul>']
+];
+function compress(f,cb){var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){var s=Math.min(1,800/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);cb(c.toDataURL('image/jpeg',.72))};im.src=r.result};r.readAsDataURL(f)}
+function toText(h){return h.replace(/<\/li>/g,'\n').replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').trim()}
+function lines(t){return'<ul>'+String(t||'').split('\n').filter(Boolean).map(function(l){return'<li>'+esc(l)+'</li>'}).join('')+'</ul>'}
+if(!S.cruise)S.cruise=CR.map(function(c){return{id:uid(),title:c[0],html:c[1],img:''}});
+if(!S.stay)S.stay=[{id:uid(),title:'Hotel Mi Rochor',text:'89 Short Street, Singapore 188216\n近 Rochor MRT 站 A 出口\n入住 11/04 14:00・退房 11/05 12:00 前',link:'https://www.google.com/maps/search/?api=1&query=Hotel+Mi+Rochor+89+Short+Street+Singapore',img:''},{id:uid(),title:'迪士尼郵輪艙房',text:'11/05 登船・房卡會放在房門口\n船上消費用房卡累計,最後一晚再以信用卡結帳\n艙房號碼:(登船後填入)',link:'',img:''}];
+function renderCruise(oid){
+ var op={};[].forEach.call(document.querySelectorAll('#cruise details[open]'),function(d){op[d.dataset.id]=1});if(oid)op[oid]=1;
+ var first=!renderCruise.n;renderCruise.n=1;
+ $('cruise').innerHTML=S.cruise.map(function(c,i){var body=c.html!=null?c.html:lines(c.text);
+  return'<details data-id="'+c.id+'"'+((first?i===0:op[c.id])?' open':'')+'><summary>'+esc(c.title)+'</summary><div>'+body+(c.img?'<img class="cimg" src="'+c.img+'" alt="附圖">':'')+'<div class="row"><button type="button" class="btn alt" data-a="ed">✎ 編輯文字與圖片</button><button type="button" class="btn alt" data-a="rm">刪除</button></div></div></details>'}).join('')||'<p>目前沒有視窗,按下方「新增視窗」。</p>';
+}
+var SC=['c-ye','c-aq','c-gr','c-co'];
+function renderStay(){
+ $('stay').innerHTML=S.stay.map(function(c,i){var ok=/^https?:\/\//.test(c.link||'');
+  return'<div class="card '+SC[i%4]+'" data-id="'+c.id+'"><h3>'+esc(c.title)+'</h3><div style="white-space:pre-line;margin-top:6px">'+esc(c.text)+'</div>'+(c.img?'<img class="st-img" src="'+c.img+'" alt="附圖">':'')+
+  '<div class="row">'+(ok?'<a class="btn" style="display:inline-flex;align-items:center;text-decoration:none" href="'+esc(c.link)+'" target="_blank" rel="noopener">開啟連結</a>':'')+'<button type="button" class="btn alt" data-a="ed">✎ 編輯</button><button type="button" class="btn alt" data-a="rm">刪除</button></div></div>'}).join('')||'<p>目前沒有視窗,按下方「新增視窗」。</p>';
+}
+var ctx=null,tmp2='',d2=$('dlg2');
+function prev2(){var p=$('g-prev');if(tmp2){p.src=tmp2;p.hidden=false}else p.hidden=true}
+function open2(kind,id){
+ ctx={kind:kind,id:id};
+ var it=id?S[kind].filter(function(x){return x.id===id})[0]:{title:'',text:'',link:'',img:''};
+ $('g-title').value=it.title;$('g-text').value=it.text!=null?it.text:(it.html?toText(it.html):'');$('g-link').value=it.link||'';
+ $('g-linkwrap').hidden=kind!=='stay';$('g-img').value='';tmp2=it.img||'';prev2();
+ $('d2title').textContent=id?'編輯視窗':'新增視窗';d2.showModal();
+}
+$('g-img').onchange=function(e){var f=e.target.files[0];if(f)compress(f,function(u){tmp2=u;prev2()})};
+$('g-rmimg').onclick=function(){tmp2='';$('g-img').value='';prev2()};
+$('g-cancel').onclick=function(){d2.close()};
+$('g-save').onclick=function(){
+ var ti=$('g-title').value.trim();if(!ti){$('g-title').focus();return}
+ var arr=S[ctx.kind],v={title:ti,text:$('g-text').value.trim(),link:$('g-link').value.trim(),img:tmp2},id=ctx.id;
+ if(id){arr.forEach(function(x){if(x.id===id){Object.assign(x,v);delete x.html}})}else{id=uid();v.id=id;arr.push(v)}
+ save();d2.close();if(ctx.kind==='cruise')renderCruise(id);else renderStay();
+};
+function pasteImg(e,cb){var f=e.clipboardData&&e.clipboardData.files&&e.clipboardData.files[0];if(f&&f.type.indexOf('image')===0){e.preventDefault();compress(f,cb)}}
+d2.addEventListener('paste',function(e){pasteImg(e,function(u){tmp2=u;prev2()})});
+dlg.addEventListener('paste',function(e){pasteImg(e,function(u){tmpImg=u;setPrev()})});
+function listClick(kind,box){box.addEventListener('click',function(e){
+ var b=e.target.closest('button[data-a]');if(!b)return;
+ var id=b.closest('[data-id]').dataset.id;
+ if(b.dataset.a==='ed')open2(kind,id);
+ else if(confirm('確定刪除這個視窗?')){S[kind]=S[kind].filter(function(x){return x.id!==id});save();kind==='cruise'?renderCruise():renderStay()}
+})}
+listClick('cruise',$('cruise'));listClick('stay',$('stay'));
+$('addcr').onclick=function(){open2('cruise',null)};$('addst').onclick=function(){open2('stay',null)};
+renderCruise();renderStay();
+
+renderTL(false);renderLists();
+})();
+</script>
+</body>
+</html>
