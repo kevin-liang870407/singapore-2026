@@ -84,6 +84,16 @@ dialog::backdrop{background:rgba(62,58,57,.45)}
 .foot{text-align:center;font-size:13px;margin-top:24px}
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ye);border:var(--b);border-radius:18px;padding:8px 16px;z-index:40;display:none}
 .srcs{font-size:13px}.cimg{display:block;max-width:100%;max-height:320px;margin-top:8px;border:var(--b);border-radius:14px}.st-img{display:block;max-width:100%;max-height:320px;margin-top:10px;border:var(--b);border-radius:14px;background:#fff}
+.it img,.cimg,.st-img{cursor:zoom-in}
+dialog{overflow-y:auto;overscroll-behavior:contain}
+dialog .row{position:sticky;bottom:-16px;background:var(--bg);padding:10px 0 4px;border-top:3px solid var(--ink)}
+dialog#lb{width:100vw;height:100vh;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:0;background:rgba(62,58,57,.94);overflow:hidden}
+#lb .box{position:absolute;inset:0;overflow:auto;display:flex;padding:60px 8px 12px}
+#lbi{margin:auto;display:block;border-radius:12px;background:#fff}
+#lbi.fit{max-width:calc(100vw - 16px);max-height:calc(100vh - 76px);max-height:calc(100dvh - 76px);cursor:zoom-in}
+#lbi.big{max-width:none;max-height:none;width:240%;cursor:zoom-out}
+#lbx{position:absolute;top:8px;right:8px;z-index:2;width:48px;height:48px;border:var(--b);border-radius:50%;background:var(--bg);font-size:26px;line-height:1}
+#lbh{position:absolute;top:18px;left:14px;z-index:2;color:#FFFCF6;font-size:14px}
 @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
@@ -196,6 +206,7 @@ dialog::backdrop{background:rgba(62,58,57,.45)}
 <img class="prev" id="g-prev" alt="" hidden>
 <div class="row"><button type="button" class="btn go" id="g-save">儲存</button><button type="button" class="btn alt" id="g-cancel">取消</button><button type="button" class="btn alt" id="g-rmimg">移除圖片</button></div>
 </form></dialog>
+<dialog id="lb" aria-label="圖片檢視"><button type="button" id="lbx" aria-label="關閉">×</button><span id="lbh">點圖片可放大/縮小</span><div class="box"><img id="lbi" class="fit" alt="放大的圖片"></div></dialog>
 <div id="toast" role="status"></div>
 
 <script>
@@ -239,6 +250,12 @@ var DEF={
  lodge:{cabin:'',note:''}
 };
 var uid=function(){return Math.random().toString(36).slice(2,9)};
+var IMG={},idb=null;
+function idbOpen(cb){try{var r=indexedDB.open('trip-sg-img',1);r.onupgradeneeded=function(){r.result.createObjectStore('i')};r.onsuccess=function(){idb=r.result;cb()};r.onerror=function(){cb()}}catch(e){cb()}}
+function idbAll(cb){if(!idb)return cb();try{var q=idb.transaction('i').objectStore('i').openCursor();q.onsuccess=function(){var c=q.result;if(c){IMG[c.key]=c.value;c['continue']()}else cb()};q.onerror=function(){cb()}}catch(e){cb()}}
+function putImg(d){if(!idb)return d;var k='i'+uid()+uid();IMG[k]=d;try{idb.transaction('i','readwrite').objectStore('i').put(d,k)}catch(e){delete IMG[k];return d}return k}
+function delImg(v){if(v&&IMG[v]){delete IMG[v];try{idb.transaction('i','readwrite').objectStore('i')['delete'](v)}catch(e){}}}
+function src(v){return v?(v.indexOf('data:')===0?v:(IMG[v]||'')):''}
 function build(){
  var s={days:DEF.days.map(function(d){return{d:d.d,w:d.w,theme:d.theme,items:d.items.map(function(a){return{id:uid(),time:a[0],title:a[1],detail:a[2],tag:a[3],note:'',img:''}})}}),lodge:{cabin:'',note:''},done:{}};
  ['todo','pack','carry'].forEach(function(k){s[k]=DEF[k].map(function(t){return{id:uid(),t:t}})});
@@ -286,7 +303,7 @@ function renderTL(anim){
   return'<article class="it" data-id="'+it.id+'">'+
   '<span class="chip">'+esc(it.time)+'</span> '+(it.tag&&it.tag!=='無'?'<span class="chip '+c+'">'+esc(it.tag)+'</span>':'')+
   '<h3>'+esc(it.title)+'</h3>'+(it.detail?'<div class="d">'+esc(it.detail)+'</div>':'')+
-  (it.note?'<div class="note">'+esc(it.note)+'</div>':'')+(it.img?'<img src="'+it.img+'" alt="行程備註圖片">':'')+
+  (it.note?'<div class="note">'+esc(it.note)+'</div>':'')+(it.img?'<img src="'+src(it.img)+'" alt="行程備註圖片">':'')+
   '<button type="button" class="x" data-a="del" aria-label="刪除此行程">×</button>'+
   '<button type="button" class="plus" data-a="edit" aria-label="編輯、加備註與圖片">＋</button></article>';
  }).join('')||'<p>這天還沒有行程,按下方「新增行程」。</p>';
@@ -296,11 +313,11 @@ $('daytabs').addEventListener('click',function(e){var b=e.target.closest('button
 $('tl').addEventListener('click',function(e){
  var b=e.target.closest('button[data-a]');if(!b)return;
  var id=b.closest('.it').dataset.id;
- if(b.dataset.a==='del'){if(confirm('確定刪除這個行程?')){S.days[day].items=S.days[day].items.filter(function(i){return i.id!==id});save();renderTL(false)}}
+ if(b.dataset.a==='del'){if(confirm('確定刪除這個行程?')){S.days[day].items=S.days[day].items.filter(function(i){if(i.id===id)delImg(i.img);return i.id!==id});save();renderTL(false)}}
  else openDlg(id);
 });
 $('additem').onclick=function(){openDlg(null)};
-$('reset').onclick=function(){if(confirm('會清掉你對行程的所有修改(待辦與住宿不受影響),確定還原?')){S.days=build().days;day=0;save();renderTL(true)}};
+$('reset').onclick=function(){if(confirm('會清掉你對行程的所有修改(待辦與住宿不受影響),確定還原?')){S.days.forEach(function(d){d.items.forEach(function(i){delImg(i.img)})});S.days=build().days;day=0;save();renderTL(true)}};
 
 var dlg=$('dlg');
 function openDlg(id){
@@ -309,21 +326,16 @@ function openDlg(id){
  $('f-time').value=it.time;$('f-title').value=it.title;$('f-detail').value=it.detail;$('f-tag').value=it.tag||'無';$('f-note').value=it.note;$('f-img').value='';
  tmpImg=it.img;setPrev();dlg.showModal();
 }
-function setPrev(){var p=$('f-prev');if(tmpImg){p.src=tmpImg;p.hidden=false}else p.hidden=true}
-$('f-img').onchange=function(e){
- var f=e.target.files[0];if(!f)return;
- var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){
-  var m=800,s=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');
-  c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);
-  tmpImg=c.toDataURL('image/jpeg',.72);setPrev()};im.src=r.result};r.readAsDataURL(f);
-};
+function setPrev(){var p=$('f-prev');if(tmpImg){p.src=src(tmpImg);p.hidden=false}else p.hidden=true}
+$('f-img').onchange=function(e){var f=e.target.files[0];if(f)compress(f,function(u){tmpImg=u;setPrev()})};
 $('f-rmimg').onclick=function(){tmpImg='';$('f-img').value='';setPrev()};
 $('f-cancel').onclick=function(){dlg.close()};
 $('f-save').onclick=function(){
  var t=$('f-title').value.trim();if(!t){$('f-title').focus();return}
- var v={time:$('f-time').value.trim()||'—',title:t,detail:$('f-detail').value.trim(),tag:$('f-tag').value,note:$('f-note').value.trim(),img:tmpImg};
+ var ref=tmpImg&&tmpImg.indexOf('data:')===0?putImg(tmpImg):tmpImg;
+ var v={time:$('f-time').value.trim()||'—',title:t,detail:$('f-detail').value.trim(),tag:$('f-tag').value,note:$('f-note').value.trim(),img:ref};
  var arr=S.days[day].items;
- if(editing){arr.forEach(function(i){if(i.id===editing)Object.assign(i,v)})}else{v.id=uid();arr.push(v)}
+ if(editing){arr.forEach(function(i){if(i.id===editing){if(i.img!==ref)delImg(i.img);Object.assign(i,v)}})}else{v.id=uid();arr.push(v)}
  save();dlg.close();renderTL(false);
 };
 
@@ -355,7 +367,7 @@ var CR=[
 ['遊樂與設施','<ul><li>官網介紹有「海上最長的雲霄飛車」與漫威主題遊樂設施(你的筆記:Ironcycle 要搶)。</li><li>泳池與戲水區、兒童俱樂部、豪華水療、精品與紀念品店、各式酒吧與休息室。</li><li>另有禮賓專屬樓層與休息室(Concierge)。</li></ul>'],
 ['登船小撇步(你的筆記)','<ul><li>先在 App 完成線上報到、綁信用卡、選碼頭報到時間。</li><li>手機關閉自動時區與數據漫遊,連船上 Wi-Fi 即可用 App 與家人通訊;要上網另買 internet only。</li><li>21:30 後商店人比較少,可逛限定商品。</li><li>郵輪服務費每晚 US$16。</li></ul>']
 ];
-function compress(f,cb){var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){var s=Math.min(1,800/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);cb(c.toDataURL('image/jpeg',.72))};im.src=r.result};r.readAsDataURL(f)}
+function compress(f,cb){var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){var s=Math.min(1,1600/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);cb(c.toDataURL('image/jpeg',.86))};im.src=r.result};r.readAsDataURL(f)}
 function toText(h){return h.replace(/<\/li>/g,'\n').replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').trim()}
 function lines(t){return'<ul>'+String(t||'').split('\n').filter(Boolean).map(function(l){return'<li>'+esc(l)+'</li>'}).join('')+'</ul>'}
 if(!S.cruise)S.cruise=CR.map(function(c){return{id:uid(),title:c[0],html:c[1],img:''}});
@@ -364,16 +376,16 @@ function renderCruise(oid){
  var op={};[].forEach.call(document.querySelectorAll('#cruise details[open]'),function(d){op[d.dataset.id]=1});if(oid)op[oid]=1;
  var first=!renderCruise.n;renderCruise.n=1;
  $('cruise').innerHTML=S.cruise.map(function(c,i){var body=c.html!=null?c.html:lines(c.text);
-  return'<details data-id="'+c.id+'"'+((first?i===0:op[c.id])?' open':'')+'><summary>'+esc(c.title)+'</summary><div>'+body+(c.img?'<img class="cimg" src="'+c.img+'" alt="附圖">':'')+'<div class="row"><button type="button" class="btn alt" data-a="ed">✎ 編輯文字與圖片</button><button type="button" class="btn alt" data-a="rm">刪除</button></div></div></details>'}).join('')||'<p>目前沒有視窗,按下方「新增視窗」。</p>';
+  return'<details data-id="'+c.id+'"'+((first?i===0:op[c.id])?' open':'')+'><summary>'+esc(c.title)+'</summary><div>'+body+(c.img?'<img class="cimg" src="'+src(c.img)+'" alt="附圖">':'')+'<div class="row"><button type="button" class="btn alt" data-a="ed">✎ 編輯文字與圖片</button><button type="button" class="btn alt" data-a="rm">刪除</button></div></div></details>'}).join('')||'<p>目前沒有視窗,按下方「新增視窗」。</p>';
 }
 var SC=['c-ye','c-aq','c-gr','c-co'];
 function renderStay(){
  $('stay').innerHTML=S.stay.map(function(c,i){var ok=/^https?:\/\//.test(c.link||'');
-  return'<div class="card '+SC[i%4]+'" data-id="'+c.id+'"><h3>'+esc(c.title)+'</h3><div style="white-space:pre-line;margin-top:6px">'+esc(c.text)+'</div>'+(c.img?'<img class="st-img" src="'+c.img+'" alt="附圖">':'')+
+  return'<div class="card '+SC[i%4]+'" data-id="'+c.id+'"><h3>'+esc(c.title)+'</h3><div style="white-space:pre-line;margin-top:6px">'+esc(c.text)+'</div>'+(c.img?'<img class="st-img" src="'+src(c.img)+'" alt="附圖">':'')+
   '<div class="row">'+(ok?'<a class="btn" style="display:inline-flex;align-items:center;text-decoration:none" href="'+esc(c.link)+'" target="_blank" rel="noopener">開啟連結</a>':'')+'<button type="button" class="btn alt" data-a="ed">✎ 編輯</button><button type="button" class="btn alt" data-a="rm">刪除</button></div></div>'}).join('')||'<p>目前沒有視窗,按下方「新增視窗」。</p>';
 }
 var ctx=null,tmp2='',d2=$('dlg2');
-function prev2(){var p=$('g-prev');if(tmp2){p.src=tmp2;p.hidden=false}else p.hidden=true}
+function prev2(){var p=$('g-prev');if(tmp2){p.src=src(tmp2);p.hidden=false}else p.hidden=true}
 function open2(kind,id){
  ctx={kind:kind,id:id};
  var it=id?S[kind].filter(function(x){return x.id===id})[0]:{title:'',text:'',link:'',img:''};
@@ -386,8 +398,9 @@ $('g-rmimg').onclick=function(){tmp2='';$('g-img').value='';prev2()};
 $('g-cancel').onclick=function(){d2.close()};
 $('g-save').onclick=function(){
  var ti=$('g-title').value.trim();if(!ti){$('g-title').focus();return}
- var arr=S[ctx.kind],v={title:ti,text:$('g-text').value.trim(),link:$('g-link').value.trim(),img:tmp2},id=ctx.id;
- if(id){arr.forEach(function(x){if(x.id===id){Object.assign(x,v);delete x.html}})}else{id=uid();v.id=id;arr.push(v)}
+ var ref=tmp2&&tmp2.indexOf('data:')===0?putImg(tmp2):tmp2;
+ var arr=S[ctx.kind],v={title:ti,text:$('g-text').value.trim(),link:$('g-link').value.trim(),img:ref},id=ctx.id;
+ if(id){arr.forEach(function(x){if(x.id===id){if(x.img!==ref)delImg(x.img);Object.assign(x,v);delete x.html}})}else{id=uid();v.id=id;arr.push(v)}
  save();d2.close();if(ctx.kind==='cruise')renderCruise(id);else renderStay();
 };
 function pasteImg(e,cb){var f=e.clipboardData&&e.clipboardData.files&&e.clipboardData.files[0];if(f&&f.type.indexOf('image')===0){e.preventDefault();compress(f,cb)}}
@@ -397,13 +410,19 @@ function listClick(kind,box){box.addEventListener('click',function(e){
  var b=e.target.closest('button[data-a]');if(!b)return;
  var id=b.closest('[data-id]').dataset.id;
  if(b.dataset.a==='ed')open2(kind,id);
- else if(confirm('確定刪除這個視窗?')){S[kind]=S[kind].filter(function(x){return x.id!==id});save();kind==='cruise'?renderCruise():renderStay()}
+ else if(confirm('確定刪除這個視窗?')){S[kind]=S[kind].filter(function(x){if(x.id===id)delImg(x.img);return x.id!==id});save();kind==='cruise'?renderCruise():renderStay()}
 })}
 listClick('cruise',$('cruise'));listClick('stay',$('stay'));
 $('addcr').onclick=function(){open2('cruise',null)};$('addst').onclick=function(){open2('stay',null)};
 renderCruise();renderStay();
 
 renderTL(false);renderLists();
+var lb=$('lb'),lbi=$('lbi');
+document.addEventListener('click',function(e){var im=e.target;if(im.tagName==='IMG'&&im.matches('.it img,.cimg,.st-img')){lbi.src=im.src;lbi.className='fit';lb.showModal()}});
+lbi.onclick=function(){lbi.className=lbi.className==='fit'?'big':'fit'};
+$('lbx').onclick=function(){lb.close()};
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+idbOpen(function(){idbAll(function(){renderTL(false);renderCruise();renderStay()})});
 })();
 </script>
 </body>
