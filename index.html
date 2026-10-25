@@ -271,7 +271,7 @@ var S;
 try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 var SEED=null,wipe=false;
 try{SEED=JSON.parse($('seed').textContent)}catch(e){}
-if(SEED&&SEED.data&&SEED.data.days&&(!S||!S.days||S.seedV!==SEED.v)){
+if(SEED&&SEED.data&&SEED.data.days&&(!S||!S.days||(S.seedV||0)<SEED.v)){
  var dn=(S&&S.done)||{};wipe=!!(S&&S.days);
  S=JSON.parse(JSON.stringify(SEED.data));S.done=dn;S.seedV=SEED.v;S.lodge={cabin:'',note:''};
 }
@@ -440,17 +440,22 @@ idbOpen(function(){
  var go=function(){migrate();renderTL(false);renderCruise();renderStay()};
  if(wipe&&idb){IMG={};try{idb.transaction('i','readwrite').objectStore('i').clear()}catch(e){}go()}else idbAll(go);
 });
+var SRC='';
+function getSrc(){return fetch(location.href.split('#')[0],{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(h){SRC=h;return h})}
+try{getSrc()['catch'](function(){})}catch(e){}
 $('export').onclick=function(){
+ if(!SRC){toast('頁面還在準備,請稍等 2 秒再按一次(要用網站網址開啟)');try{getSrc()['catch'](function(){})}catch(e){}return}
  var data=JSON.parse(JSON.stringify({days:S.days,todo:S.todo,pack:S.pack,carry:S.carry,cruise:S.cruise,stay:S.stay},function(k,v){return(k==='img'&&v)?src(v):v}));
- var v=Date.now();
- fetch(location.href.split('#')[0],{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(h){
-  var seed=JSON.stringify({v:v,data:data}).replace(/</g,'\\u003c');
-  var out=h.replace(/(<script type="application\/json" id="seed">)[\s\S]*?(<\/script>)/,function(m,a,b){return a+seed+b});
-  if(out===h&&h.indexOf('id="seed"')<0)throw 0;
-  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([out],{type:'text/html'}));a.download='index.html';
-  document.body.appendChild(a);a.click();a.remove();
-  S.seedV=v;save();toast('已下載 index.html,請上傳到 GitHub 覆蓋舊檔');
- }).catch(function(){toast('匯出失敗:請用網站網址(不是本機檔案)開啟後再試')});
+ var v=Date.now(),seed=JSON.stringify({v:v,data:data}).replace(/</g,'\\u003c');
+ var out=SRC.replace(/(<script type="application\/json" id="seed">)[\s\S]*?(<\/script>)/,function(m,a,b){return a+seed+b});
+ var file=null;try{file=new File([out],'index.html',{type:'text/html'})}catch(e){}
+ S.seedV=v;save();
+ if(file&&navigator.canShare&&navigator.canShare({files:[file]})){
+  toast('在分享選單選「儲存到檔案」');
+  navigator.share({files:[file]})['catch'](function(){});return;
+ }
+ var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([out],{type:'text/html'}));a.download='index.html';
+ document.body.appendChild(a);a.click();a.remove();toast('已下載 index.html,請上傳到 GitHub 覆蓋舊檔');
 };
 })();
 </script>
